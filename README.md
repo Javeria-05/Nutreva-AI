@@ -217,8 +217,7 @@ If you like this project, don't forget to ⭐ star this repository.
 
 ---
 
-<div align="center">
 
-Made with ❤️ using Python, Machine Learning and Streamlit
+
 
 </div>
