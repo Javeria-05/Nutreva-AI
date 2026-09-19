@@ -18,6 +18,12 @@ An intelligent **Content-Based Food Recommendation System** built using **Python
 
 ---
 
+## 🔗 Live Demo
+
+**[Try Nutreva AI live →](https://nutreva-ai-q5x6uoynp3s72buwdk4jps.streamlit.app/)**
+
+---
+
 # 📌 Project Overview
 
 Nutreva AI is an intelligent nutrition recommendation system that suggests healthy foods based on user preferences.
