@@ -1,8 +1,6 @@
-# 🥗 Nutreva AI
-
 <div align="center">
 
-# 🥗 Nutreva
+# 🥗 Nutreva AI
 ### AI-Powered Nutrition Recommendation System
 
 An intelligent **Content-Based Food Recommendation System** built using **Python**, **Machine Learning**, **TF-IDF**, **Cosine Similarity**, and **Streamlit**.
@@ -12,6 +10,7 @@ An intelligent **Content-Based Food Recommendation System** built using **Python
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Latest-red)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-TF--IDF-success)
+![EDA](https://img.shields.io/badge/EDA-23%20Visualizations-orange)
 ![Status](https://img.shields.io/badge/Project-Completed-brightgreen)
 
 </div>
@@ -54,6 +53,7 @@ The AI engine analyzes these preferences and recommends the most relevant foods 
 - ❤️ Health Goal Matching
 - 📊 Nutrition Dashboard
 - 📉 Interactive Charts
+- 🔍 Exploratory Data Analysis with 23 visualizations
 - 🌙 Professional Streamlit UI
 
 ---
@@ -95,6 +95,7 @@ Top AI Recommendations
 | Cosine Similarity | Recommendation Engine |
 | Streamlit | Web Application |
 | Plotly | Interactive Charts |
+| Matplotlib & Seaborn | Exploratory Data Analysis |
 
 ---
 
@@ -109,6 +110,10 @@ Nutreva
 │
 ├── dataset
 │   └── Nutreva.csv
+│
+├── analysis
+│   ├── eda.py
+│   └── graphs/          # 23 generated visualizations
 │
 ├── models
 │   ├── preprocess.py
@@ -181,6 +186,49 @@ python -m streamlit run app.py
 
 ---
 
+# 🔍 Exploratory Data Analysis
+
+A full EDA was performed on the dataset to understand the relationships between nutritional values, health goals, diet types and recommendation tags.
+
+**Data cleaning:** 74 invalid rows were removed before analysis (foods above 900 kcal per 100 g, which is physically impossible, and one corrupted row), leaving **2322 foods**.
+
+Generate all 23 graphs:
+
+```bash
+python analysis/eda.py
+```
+
+### Correlation Between Nutritional Features
+<img src="analysis/graphs/01_correlation_heatmap.png" width="600" />
+
+### Calories vs Health Score
+<img src="analysis/graphs/02_scatter_calories_vs_health_score.png" width="600" />
+
+### Average Nutrients by Health Goal
+<img src="analysis/graphs/11_health_goal_vs_nutrients.png" width="700" />
+
+### Diet Type Share within Each Health Goal
+<img src="analysis/graphs/15_health_goal_x_diet_type.png" width="700" />
+
+### Recommendation Tags Frequency
+<img src="analysis/graphs/21_tags_frequency.png" width="600" />
+
+### Calories Distribution
+<img src="analysis/graphs/23_calories_distribution.png" width="700" />
+
+### Key Findings
+
+- **Calories and Health Score** have a strong negative correlation (r = −0.60): higher-calorie foods receive lower health scores.
+- **Fat** is the second biggest factor lowering the health score (r = −0.51).
+- **Protein and Fat** are strongly linked (r = 0.69), mainly driven by meat-based foods.
+- **Weight Gain** foods have the highest average calories, protein and fat, while **Weight Loss** foods are the lowest across all macronutrients.
+- The calories distribution is **right-skewed**: most foods are low-calorie, while a small number of high-calorie foods pull the mean above the median.
+- **Weight Loss** foods make up the largest share of the dataset, and **Heart Healthy** is the most common recommendation tag.
+
+All 23 graphs are available in [`analysis/graphs`](analysis/graphs).
+
+---
+
 # 📸 Screenshots
 <img width="1365" height="601" alt="image" src="https://github.com/user-attachments/assets/dc54bab3-a62e-4d79-a071-c432492305ea" />
 <img width="1365" height="597" alt="image" src="https://github.com/user-attachments/assets/60c7ffc9-0161-4c45-a970-968e210bc3ab" />
@@ -190,9 +238,7 @@ python -m streamlit run app.py
 <img width="1365" height="599" alt="image" src="https://github.com/user-attachments/assets/75d43c31-50cf-46be-a38f-c8bf8e064578" />
 <img width="1365" height="598" alt="image" src="https://github.com/user-attachments/assets/b5284091-05b7-4065-ac20-2e6b2987f7c0" />
 
-
-
-
+---
 
 # 🚀 Future Improvements
 
@@ -220,10 +266,3 @@ AI & Machine Learning Enthusiast
 # ⭐ Support
 
 If you like this project, don't forget to ⭐ star this repository.
-
----
-
-
-
-
-</div>
