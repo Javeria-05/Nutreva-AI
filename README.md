@@ -218,12 +218,13 @@ python analysis/eda.py
 
 ### Key Findings
 
-- **Calories and Health Score** have a strong negative correlation (r = −0.60): higher-calorie foods receive lower health scores.
+- **Calories and Health Score** have a strong negative correlation (r = −0.60): foods under 100 kcal average a health score of 98, while foods above 400 kcal average 85.
 - **Fat** is the second biggest factor lowering the health score (r = −0.51).
 - **Protein and Fat** are strongly linked (r = 0.69), mainly driven by meat-based foods.
-- **Weight Gain** foods have the highest average calories, protein and fat, while **Weight Loss** foods are the lowest across all macronutrients.
-- The calories distribution is **right-skewed**: most foods are low-calorie, while a small number of high-calorie foods pull the mean above the median.
-- **Weight Loss** foods make up the largest share of the dataset, and **Heart Healthy** is the most common recommendation tag.
+- **Health goal labels are consistent with nutrition:** Weight Gain foods have the highest calories, carbs and fat, Muscle Gain foods have the highest protein (≈41 g per 100 g), and Weight Loss foods are the lowest across all macronutrients.
+- **Vegan foods dominate every health goal** (62–82%), while only two foods fit Veg + Muscle Gain.
+- **Heart Healthy** is assigned to 85% of foods, making it the least distinctive recommendation tag.
+- The calories distribution is **right-skewed** (mean 176 kcal, median 112 kcal): most foods are low-calorie, while a small number of high-calorie foods pull the mean above the median.
 
 All 23 graphs are available in [`analysis/graphs`](analysis/graphs).
 

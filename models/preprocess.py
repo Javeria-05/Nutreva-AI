@@ -1,4 +1,13 @@
+from pathlib import Path
+
 import pandas as pd
+
+
+DATA_PATH = Path(__file__).resolve().parent.parent / "dataset" / "Nutreva.csv"
+
+MAX_CALORIES_PER_100G = 900
+CORRUPTED_VALUE = 551
+MACRO_COLUMNS = ["protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g"]
 
 
 # ==========================================================
@@ -8,7 +17,27 @@ def load_dataset():
     """
     Load the Nutreva dataset.
     """
-    df = pd.read_csv("dataset/Nutreva.csv")
+    df = pd.read_csv(DATA_PATH)
+    return df
+
+
+# ==========================================================
+# Remove Invalid Rows
+# ==========================================================
+def remove_invalid_rows(df):
+    """
+    Remove rows with physically impossible nutrition values.
+    """
+
+    original = len(df)
+
+    df = df[df["calories"] <= MAX_CALORIES_PER_100G]
+    df = df[~(df[MACRO_COLUMNS] == CORRUPTED_VALUE).all(axis=1)]
+
+    df = df.reset_index(drop=True)
+
+    print(f"✅ Removed {original - len(df)} invalid rows ({original} -> {len(df)})")
+
     return df
 
 
@@ -56,6 +85,8 @@ def preprocess_dataset(df):
     print("\n" + "=" * 60)
     print("🤖 AI PREPROCESSING")
     print("=" * 60)
+
+    df = remove_invalid_rows(df)
 
     # Columns required for AI
     text_columns = [

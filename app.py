@@ -31,15 +31,10 @@ from models.recommender import (
 # ===========================
 
 st.set_page_config(
-
     page_title="Nutreva",
-
     page_icon="🥗",
-
     layout="wide",
-
     initial_sidebar_state="expanded"
-
 )
 
 # ===========================
@@ -54,7 +49,6 @@ load_css()
 
 @st.cache_resource
 def load_ai():
-
     return build_ai_engine()
 
 df, vectorizer, tfidf_matrix, similarity_matrix = load_ai()
@@ -64,116 +58,52 @@ df, vectorizer, tfidf_matrix, similarity_matrix = load_ai()
 # ===========================
 
 st.markdown("""
-
 <div class="hero">
-
 <h1>🥗 Nutreva</h1>
-
-<p>
-
-AI Powered Nutrition Recommendation Platform
-
-</p>
-
+<p>AI Powered Nutrition Recommendation Platform</p>
 </div>
-
 """, unsafe_allow_html=True)
 
 # ===========================
 # Metrics
 # ===========================
 
-c1,c2,c3,c4=st.columns(4)
+c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-
-    st.markdown("""
-
+    st.markdown(f"""
 <div class="metric-card">
-
-<div class="metric-title">
-
-Foods
-
+<div class="metric-title">Foods</div>
+<div class="metric-value">{len(df)}</div>
 </div>
-
-<div class="metric-value">
-
-2396
-
-</div>
-
-</div>
-
-""",unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 with c2:
-
     st.markdown("""
-
 <div class="metric-card">
-
-<div class="metric-title">
-
-Features
-
+<div class="metric-title">Features</div>
+<div class="metric-value">20</div>
 </div>
-
-<div class="metric-value">
-
-20
-
-</div>
-
-</div>
-
-""",unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 with c3:
-
     st.markdown("""
-
 <div class="metric-card">
-
-<div class="metric-title">
-
-AI Model
-
+<div class="metric-title">AI Model</div>
+<div class="metric-value">TF-IDF</div>
 </div>
-
-<div class="metric-value">
-
-TF-IDF
-
-</div>
-
-</div>
-
-""",unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 with c4:
-
     st.markdown("""
-
 <div class="metric-card">
-
-<div class="metric-title">
-
-Engine
-
+<div class="metric-title">Engine</div>
+<div class="metric-value">Ready</div>
 </div>
-
-<div class="metric-value">
-
-Ready
-
-</div>
-
-</div>
-
-""",unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.divider()
+
 # ==========================================================
 # Sidebar
 # ==========================================================
@@ -241,66 +171,62 @@ else:
         df=df,
         top_n=top_n
     )
-# ==========================================================
-# Show AI Recommendations
-# ==========================================================
 
-if recommend_btn and not results.empty:
+    if not results.empty:
 
-    st.divider()
+        # ==========================================================
+        # Show AI Recommendations
+        # ==========================================================
 
-    st.header("🥗 Recommended Foods")
+        st.divider()
+        st.header("🥗 Recommended Foods")
 
-    for _, row in results.iterrows():
+        for _, row in results.iterrows():
 
-        recommendation_card(row)
+            recommendation_card(row)
 
-        with st.expander("📊 View Nutrition Details"):
+            with st.expander("📊 View Nutrition Details"):
+                nutrition_metrics(row)
+                health_progress(row["health_score"])
+                ai_explanation(row)
 
-            nutrition_metrics(row)
+            st.markdown("---")
 
-            health_progress(row["health_score"])
-
-            ai_explanation(row)
-
-        st.markdown("---")
-# ==========================================================
-# Charts
-# ==========================================================
-
-    if recommend_btn and not results.empty:
+        # ==========================================================
+        # Charts
+        # ==========================================================
 
         st.header("📈 Nutrition Dashboard")
 
-        c1, c2 = st.columns(2)
+        ch1, ch2 = st.columns(2)
 
-    with c1:
+        with ch1:
+            st.plotly_chart(
+                calories_chart(results),
+                use_container_width=True
+            )
+
+        with ch2:
+            st.plotly_chart(
+                protein_chart(results),
+                use_container_width=True
+            )
+
+        ch3, ch4 = st.columns(2)
+
+        with ch3:
+            st.plotly_chart(
+                health_score_chart(results),
+                use_container_width=True
+            )
+
+        with ch4:
+            st.plotly_chart(
+                nutrition_pie(results.iloc[0]),
+                use_container_width=True
+            )
+
         st.plotly_chart(
-            calories_chart(results),
+            health_gauge(results.iloc[0]["health_score"]),
             use_container_width=True
         )
-
-    with c2:
-        st.plotly_chart(
-            protein_chart(results),
-            use_container_width=True
-        )
-
-    c3, c4 = st.columns(2)
-
-    with c3:
-        st.plotly_chart(
-            health_score_chart(results),
-            use_container_width=True
-        )
-
-    with c4:
-        st.plotly_chart(
-            nutrition_pie(results.iloc[0]),
-            use_container_width=True
-        )
-
-    st.plotly_chart(
-        health_gauge(results.iloc[0]["health_score"]),
-        use_container_width=True
-    )
