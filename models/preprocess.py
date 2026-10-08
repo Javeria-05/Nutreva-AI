@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from models.diet_rules import fix_diet_type
+
 
 DATA_PATH = Path(__file__).resolve().parent.parent / "dataset" / "Nutreva.csv"
 
@@ -87,6 +89,7 @@ def preprocess_dataset(df):
     print("=" * 60)
 
     df = remove_invalid_rows(df)
+    df = fix_diet_type(df)
 
     # Columns required for AI
     text_columns = [

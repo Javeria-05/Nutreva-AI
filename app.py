@@ -21,6 +21,8 @@ from utils.charts import (
     health_gauge
 )
 
+from utils.helper import describe, display_name, ordered_options
+
 from models.recommender import (
     build_ai_engine,
     smart_recommend_by_profile
@@ -111,23 +113,33 @@ st.divider()
 st.sidebar.title("⚙ AI Preferences")
 
 goal = st.sidebar.selectbox(
-    "🎯 Health Goal",
-    sorted(df["health_goal"].dropna().unique())
+    "🎯 What is your goal?",
+    ordered_options(df, "health_goal"),
+    format_func=lambda v: display_name("health_goal", v)
 )
+
+st.sidebar.caption(describe("health_goal", goal))
 
 meal_type = st.sidebar.selectbox(
-    "🍽 Meal Type",
-    sorted(df["meal_type"].dropna().unique())
+    "🍽 What do you want to eat?",
+    ordered_options(df, "meal_type"),
+    format_func=lambda v: display_name("meal_type", v)
 )
 
+st.sidebar.caption(describe("meal_type", meal_type))
+
 diet_type = st.sidebar.selectbox(
-    "🥦 Diet Type",
-    sorted(df["diet_type"].dropna().unique())
+    "🥦 What do you eat?",
+    ordered_options(df, "diet_type"),
+    format_func=lambda v: display_name("diet_type", v)
 )
+
+st.sidebar.caption(describe("diet_type", diet_type))
 
 cuisine = st.sidebar.selectbox(
     "🌍 Cuisine",
-    sorted(df["cuisine"].dropna().unique())
+    ordered_options(df, "cuisine"),
+    format_func=lambda v: display_name("cuisine", v)
 )
 
 top_n = st.sidebar.slider(

@@ -1,5 +1,7 @@
 import streamlit as st
 
+from utils.helper import display_name
+
 
 # ==========================================================
 # Recommendation Card
@@ -47,13 +49,13 @@ def recommendation_card(food):
 
 <b>🤖 AI Match</b> : {ai_match:.1f}%<br>
 
-<b>🎯 Goal</b> : {goal.title()}<br>
+<b>🎯 Goal</b> : {display_name('health_goal', goal)}<br>
 
-<b>🌍 Cuisine</b> : {cuisine.title()}<br>
+<b>🌍 Cuisine</b> : {display_name('cuisine', cuisine)}<br>
 
-<b>🍽 Meal</b> : {meal.title()}<br>
+<b>🍽 Meal</b> : {display_name('meal_type', meal)}<br>
 
-<b>🥦 Diet</b> : {diet.title()}<br>
+<b>🥦 Diet</b> : {display_name('diet_type', diet)}<br>
 
 <hr>
 

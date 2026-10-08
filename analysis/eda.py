@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -5,7 +6,11 @@ import pandas as pd
 import seaborn as sns
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_PATH = BASE_DIR / "dataset" / "Nutreva.csv"
+sys.path.insert(0, str(BASE_DIR))
+
+from models.diet_rules import fix_diet_type
+from models.preprocess import load_dataset, remove_invalid_rows
+
 OUT_DIR = Path(__file__).resolve().parent / "graphs"
 OUT_DIR.mkdir(exist_ok=True)
 
@@ -26,23 +31,20 @@ SCATTER_PAIRS = [
     ("carbs_g", "sugar_g"),
 ]
 
+DIET_LABELS = {"non-veg": "Non-Vegetarian", "veg": "Vegetarian", "vegan": "Vegan"}
+
 GOAL_ORDER = ["Weight Loss", "Maintain Weight", "Muscle Gain", "Weight Gain"]
-DIET_ORDER = ["Vegan", "Veg", "Non-Veg"]
+DIET_ORDER = ["Vegan", "Vegetarian", "Non-Vegetarian"]
 MEAL_ORDER = ["Lunch", "Dessert", "Beverage"]
 
 sns.set_theme(style="whitegrid")
 
 
 def load_clean_data():
-    df = pd.read_csv(DATA_PATH)
-    original = len(df)
-
-    df = df[df["calories"] <= 900]
-
-    macro_cols = ["protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g"]
-    df = df[~(df[macro_cols] == 551).all(axis=1)]
-
-    print(f"Rows: {original} -> {len(df)} after cleaning")
+    df = load_dataset()
+    df = remove_invalid_rows(df)
+    df = fix_diet_type(df)
+    df["diet_type"] = df["diet_type"].map(DIET_LABELS)
     return df
 
 
@@ -54,13 +56,17 @@ def save(fig, name):
 
 
 def label(col):
-    return col.replace("_g", " (g)").replace("_mg", " (mg)").replace("_", " ").title()
+    units = {"_mg": " (mg)", "_g": " (g)"}
+    for suffix, unit in units.items():
+        if col.endswith(suffix):
+            return col[: -len(suffix)].replace("_", " ").title() + unit
+    return col.replace("_", " ").title()
 
 
 def split_multi_value(df, col):
     out = df.dropna(subset=[col]).copy()
     out[col] = out[col].str.split(",")
-    out = out.explode(col)
+    out = out.explode(col).reset_index(drop=True)
     out[col] = out[col].str.strip()
     return out
 

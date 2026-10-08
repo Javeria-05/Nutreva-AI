@@ -46,9 +46,9 @@ The AI engine analyzes these preferences and recommends the most relevant foods 
 - 🥗 Content-Based Filtering
 - 📊 TF-IDF Vectorization
 - 📈 Cosine Similarity Matching
-- 🎯 Smart Profile-Based Recommendations
+- 🎯 Goal-Based Ranking (protein and calories prioritised for Muscle Gain and Weight Gain)
+- 🥦 Rule-Based Diet Classification (Vegan, Vegetarian, Non-Vegetarian)
 - 🌍 Cuisine Filtering
-- 🥦 Diet Type Filtering
 - 🍽 Meal Type Filtering
 - ❤️ Health Goal Matching
 - 📊 Nutrition Dashboard
@@ -64,7 +64,7 @@ The AI engine analyzes these preferences and recommends the most relevant foods 
 User Preferences
         │
         ▼
-Data Preprocessing
+Data Cleaning & Diet Classification
         │
         ▼
 Combined Features
@@ -77,6 +77,9 @@ Cosine Similarity
         │
         ▼
 Smart Filtering
+        │
+        ▼
+Goal-Based AI Score
         │
         ▼
 Top AI Recommendations
@@ -116,15 +119,16 @@ Nutreva
 │   └── graphs/          # 23 generated visualizations
 │
 ├── models
-│   ├── preprocess.py
-│   ├── recommender.py
+│   ├── preprocess.py    # data cleaning
+│   ├── diet_rules.py    # rule-based diet classification
+│   ├── recommender.py   # TF-IDF + goal-based ranking
 │   └── similarity.py
 │
 ├── utils
 │   ├── styles.py
 │   ├── cards.py
 │   ├── charts.py
-│   └── helper.py
+│   └── helper.py        # user-friendly labels
 │
 ├── pages
 │   ├── About.py
@@ -167,19 +171,20 @@ python -m streamlit run app.py
 # 🚀 How It Works
 
 1. Load Dataset
-2. Clean & Preprocess Data
-3. Create Combined Features
-4. TF-IDF Vectorization
-5. Cosine Similarity Calculation
-6. Smart User Profile Filtering
-7. AI Recommendation Generation
-8. Display Results in Streamlit Dashboard
+2. Remove Invalid Rows
+3. Correct Diet Labels (rule-based classifier)
+4. Create Combined Features
+5. TF-IDF Vectorization
+6. Cosine Similarity Calculation
+7. Smart User Profile Filtering
+8. Goal-Based AI Score Ranking
+9. Display Results in Streamlit Dashboard
 
 ---
 
 # 📊 Dataset Information
 
-- 🍽 Foods: **2396**
+- 🍽 Foods: **2396** (2322 after cleaning)
 - 📋 Features: **20**
 - 🤖 Recommendation Type: **Content-Based Filtering**
 - 📈 AI Model: **TF-IDF + Cosine Similarity**
@@ -190,7 +195,9 @@ python -m streamlit run app.py
 
 A full EDA was performed on the dataset to understand the relationships between nutritional values, health goals, diet types and recommendation tags.
 
-**Data cleaning:** 74 invalid rows were removed before analysis (foods above 900 kcal per 100 g, which is physically impossible, and one corrupted row), leaving **2322 foods**.
+**Data cleaning:**
+- 74 invalid rows were removed (foods above 900 kcal per 100 g, which is physically impossible, and one corrupted row), leaving **2322 foods**.
+- The original diet labels were unreliable (for example, fish and cheese were labelled as vegan). A rule-based classifier using food names, ingredients and allergens corrected the diet type of **339 foods**.
 
 Generate all 23 graphs:
 
@@ -222,9 +229,15 @@ python analysis/eda.py
 - **Fat** is the second biggest factor lowering the health score (r = −0.51).
 - **Protein and Fat** are strongly linked (r = 0.69), mainly driven by meat-based foods.
 - **Health goal labels are consistent with nutrition:** Weight Gain foods have the highest calories, carbs and fat, Muscle Gain foods have the highest protein (≈41 g per 100 g), and Weight Loss foods are the lowest across all macronutrients.
-- **Vegan foods dominate every health goal** (62–82%), while only two foods fit Veg + Muscle Gain.
+- **Diet type follows the goal:** 77% of Muscle Gain foods are non-vegetarian, while 73% of Weight Loss foods are vegan. Only three foods fit Vegetarian + Muscle Gain.
 - **Heart Healthy** is assigned to 85% of foods, making it the least distinctive recommendation tag.
 - The calories distribution is **right-skewed** (mean 176 kcal, median 112 kcal): most foods are low-calorie, while a small number of high-calorie foods pull the mean above the median.
+
+### Decisions Based on the Analysis
+
+- **Goal-based ranking:** because the health score strongly favours low-calorie foods, it was down-weighted for Muscle Gain and Weight Gain, and protein and calories were added to the ranking score for those goals.
+- **Diet relabelling:** the original diet labels were replaced with a rule-based classifier so vegan and vegetarian users never receive meat or fish.
+- **Sodium excluded:** sodium values appear to be stored in grams rather than milligrams, so the column is not used in recommendations.
 
 All 23 graphs are available in [`analysis/graphs`](analysis/graphs).
 
